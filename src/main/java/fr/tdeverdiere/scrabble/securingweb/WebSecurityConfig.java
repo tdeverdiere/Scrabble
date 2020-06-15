@@ -1,10 +1,8 @@
 package fr.tdeverdiere.scrabble.securingweb;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,8 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -47,6 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	@Override
 	public UserDetailsService userDetailsService() {
+		UserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+
 		if (environment.acceptsProfiles(Profiles.of("dev"))) {
 			UserDetails user1 =
 					User.withDefaultPasswordEncoder()
@@ -60,9 +60,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					.roles("USER")
 					.build();
 
-			return new InMemoryUserDetailsManager(user1, user2);
-		} else {
-			return new JdbcUserDetailsManager(dataSource);
+			userDetailsManager.createUser(user1);
+			userDetailsManager.createUser(user2);
+
 		}
+
+		return userDetailsManager;
 	}
 }

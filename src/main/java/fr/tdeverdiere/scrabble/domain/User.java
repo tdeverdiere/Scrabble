@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USERS")
 public class User implements Serializable, UserDetails {
 
     @Id
@@ -22,6 +22,8 @@ public class User implements Serializable, UserDetails {
     private String username;
 
     private String password;
+
+    private Boolean enabled;
 
     public Integer getUserId() {
         return userId;
@@ -52,7 +54,11 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return this.enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void setUsername(String username) {
