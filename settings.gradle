@@ -1,1 +1,3 @@
 rootProject.name = 'scrabble'
+
+include 'client'
