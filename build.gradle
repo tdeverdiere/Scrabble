@@ -31,9 +31,13 @@ project(':client') {
 
 		args = ['run', 'build', "${project.projectDir}/client"]
 	}
+}
 
-	processResources {
-		dependsOn buildNpm
+processResources {
+	dependsOn ":client:buildNpm"
+
+	from ("client/build") {
+		into "client"
 	}
 }
 

@@ -1,21 +1,49 @@
 package fr.tdeverdiere.scrabble.domain;
 
+import org.springframework.core.ReactiveAdapterRegistry;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.List;
 
+@Entity
+@Table(name = "HISTORIES")
 public class History {
 
-    private List<Letter> squares;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne
+    private Game game;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<SquareLetter> squares;
+
+    @OneToOne(cascade = CascadeType.ALL)
     private LettersPlay lettersPlay;
     private int index;
-    private int score;
-    private String playerId;
-    private List<Letter> deskLetters;
 
-    public List<Letter> getSquares() {
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Score> scores;
+
+    private String playerId;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<HistoryDeskLetter> deskLetters;
+
+    public List<SquareLetter> getSquares() {
         return squares;
     }
 
-    public void setSquares(List<Letter> squares) {
+    public void setSquares(List<SquareLetter> squares) {
         this.squares = squares;
     }
 
@@ -35,12 +63,12 @@ public class History {
         this.index = index;
     }
 
-    public int getScore() {
-        return score;
+    public List<Score> getScores() {
+        return scores;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setScores(List<Score> scores) {
+        this.scores = scores;
     }
 
     public String getPlayerId() {
@@ -51,11 +79,11 @@ public class History {
         this.playerId = playerId;
     }
 
-    public List<Letter> getDeskLetters() {
+    public List<HistoryDeskLetter> getDeskLetters() {
         return deskLetters;
     }
 
-    public void setDeskLetters(List<Letter> deskLetters) {
+    public void setDeskLetters(List<HistoryDeskLetter> deskLetters) {
         this.deskLetters = deskLetters;
     }
 }

@@ -1,13 +1,31 @@
 package fr.tdeverdiere.scrabble.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 
+@Entity
+@Table(name = "LETTERSPLAY")
 public class LettersPlay {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private int firstPosition;
     private int lastPosition;
     private String direction;
 
+    @ManyToOne
+    private History history;
+
+    @OneToMany(cascade = CascadeType.ALL)
     private List<LetterPlay> letters;
 
     public int getFirstPosition() {
