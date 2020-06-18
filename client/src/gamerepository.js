@@ -42,4 +42,23 @@ export class GameRepository {
         const webSoc = stompClient;
         webSoc.send(TURN_ENDPOINT, {timeStamp: this.timeStamp.toString()}, gameState);
     }
+
+    getGame = (gameId, callback) => {
+        let myRequest = new Request('/games/' + gameId);
+        fetch(myRequest, {
+            method: 'GET',
+            credentials: "include"
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }).then((data) => {
+                callback(data);
+        })
+            .catch((error) => {
+                console.log(error)
+        });
+    }
 }

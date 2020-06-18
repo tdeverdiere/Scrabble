@@ -6,17 +6,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = "TYPES")
-public class Type {
+public class Type implements Comparable<Type> {
 
     public enum TypeName {
         MCT,
         MCD,
         LCT,
         LCD,
-        START
+        START,
+        STANDARD
     }
 
     @Id
@@ -68,5 +70,25 @@ public class Type {
         type.setContent(typeName.name().toLowerCase());
 
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Type type = (Type) o;
+        return position == type.position &&
+                Objects.equals(content, type.content) &&
+                Objects.equals(game, type.game);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position, content, game);
+    }
+
+    @Override
+    public int compareTo(Type o) {
+        return position - o.position;
     }
 }

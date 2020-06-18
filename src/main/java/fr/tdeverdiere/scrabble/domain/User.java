@@ -3,13 +3,16 @@ package fr.tdeverdiere.scrabble.domain;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "USERS")
@@ -21,9 +24,16 @@ public class User implements Serializable, UserDetails {
 
     private String username;
 
+    private String firstName;
+
+    private String lastName;
+
     private String password;
 
     private Boolean enabled;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Authorities> authorities;
 
     public Integer getUserId() {
         return userId;
@@ -67,7 +77,11 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authorities> authorities) {
+        this.authorities = authorities;
     }
 
     public String getPassword() {
@@ -76,5 +90,21 @@ public class User implements Serializable, UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

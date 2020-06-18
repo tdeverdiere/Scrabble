@@ -31,8 +31,7 @@ public class History {
     private LettersPlay lettersPlay;
     private int index;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Score> scores;
+    private int score;
 
     private String playerId;
 
@@ -63,12 +62,12 @@ public class History {
         this.index = index;
     }
 
-    public List<Score> getScores() {
-        return scores;
+    public int getScore() {
+        return score;
     }
 
-    public void setScores(List<Score> scores) {
-        this.scores = scores;
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public String getPlayerId() {

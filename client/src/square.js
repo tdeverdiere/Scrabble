@@ -16,19 +16,21 @@ export function Square(props) {
         }),
     });
 
-    if (props.type === 'mct') {
+    let typeContent = props.type.content;
+
+    if (typeContent === 'mct') {
         className = 'square square-empty square-mct';
         content = 'MOT TRIPLE';
-    } else if (props.type === 'mcd') {
+    } else if (typeContent === 'mcd') {
         className = 'square square-empty square-mcd';
         content = 'MOT DOUBLE';
-    } else if (props.type === 'start') {
+    } else if (typeContent === 'start') {
         className = 'square square-empty square-start';
         content = 'X';
-    } else if (props.type === 'lct') {
+    } else if (typeContent === 'lct') {
         className = 'square square-empty square-lct';
         content = 'LETTRE TRIPLE';
-    } else if (props.type === 'lcd') {
+    } else if (typeContent === 'lcd') {
         className = 'square square-empty square-lcd';
         content = 'LETTRE DOUBLE';
     } else {

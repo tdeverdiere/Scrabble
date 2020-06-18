@@ -6,8 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "GAMES")
@@ -21,7 +25,8 @@ public class Game {
     private List<History> history;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Type> types;
+    @OrderBy("position")
+    private SortedSet<Type> types;
 
     private int stepNumber;
 
@@ -34,7 +39,6 @@ public class Game {
     private List<DeskLetter> deskLetters;
 
     private int boardSize;
-
 
     public Integer getId() {
         return id;
@@ -52,11 +56,11 @@ public class Game {
         this.history = history;
     }
 
-    public List<Type> getTypes() {
+    public SortedSet<Type> getTypes() {
         return types;
     }
 
-    public void setTypes(List<Type> types) {
+    public void setTypes(SortedSet<Type> types) {
         this.types = types;
     }
 

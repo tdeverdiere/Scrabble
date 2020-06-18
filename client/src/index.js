@@ -11,16 +11,21 @@ import './index.css';
 
 let boardSize = 255;
 
+var urlParams;
+(window.onpopstate = function () {
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
+
+    urlParams = {};
+    while (match = search.exec(query))
+        urlParams[decode(match[1])] = decode(match[2]);
+})();
+
 let POSITION_START = 112;
-let INITIAL_DESK_LETTERS =  [
-    {id: 1, letter: {content: 'W', point: 10}},
-    {id: 2, letter: {content: 'A', point: 1}},
-    {id: 3, letter: {content: 'G', point: 3}},
-    {id: 4, letter: {content: 'O', point: 1}},
-    {id: 5, letter: {content: 'N', point: 1}},
-    {id: 6, letter: {content: 'A', point: 1}},
-    {id: 7, letter: {content: 'U', point: 1}}
-];
+let INITIAL_DESK_LETTERS =  [];
 
 const CURRENT_LETTERS_PLAY_INIT = { firstPosition: null, lastPosition: null, direction: null, letters: Array(0)};
 
@@ -30,51 +35,12 @@ class Game extends React.Component {
         let types =  Array(boardSize).fill('square-standard');
 
         this.gameRepository = new GameRepository();
-
-        // Mot compte triple
-        types[0] = types[7] = types[14] ='mct';
-        types[105] = types[119] = 'mct';
-        types[210] = types[217] = types[224] = 'mct';
-
-
-        // Mot compte double
-        types[16] = types[28] = 'mcd';
-        types[32] = types[42] = 'mcd';
-        types[48] = types[56] = 'mcd';
-        types[64] = types[70] = 'mcd';
-        types[154] = types[160] = 'mcd';
-        types[168] = types[176] = 'mcd';
-        types[182] = types[192] = 'mcd';
-        types[196] = types[208] = 'mcd';
-
-        // Lettre compte triple
-        types[20]  = types[24] = 'lct';
-        types[76]  = types[80] = types[84] = types[88] = 'lct';
-        types[136] = types[140] = types[144] = types[148] = 'lct';
-        types[200] = types[204] = 'lct';
-
-        // Lettre compte double
-        types[3]  = types[11] = 'lcd';
-        types[36] = types[38] = 'lcd';
-        types[45] = types[52] = types[59] = 'lcd';
-        types[92] = types[96] = types[98] = types[102] = 'lcd';
-        types[108] = types[116] = 'lcd';
-        types[122] = types[126] = types[128] = types[132] = 'lcd';
-        types[165] = types[172] = types[179] = 'lcd';
-        types[186] = types[188] = 'lcd';
-        types[213]  = types[221] = 'lcd';
-
-        // Start
-        types[POSITION_START] = 'start';
+        this.gameId = urlParams["game"];
 
         // Have a game id and date and players.
         // TODO get other players' name and id.
 
         let players = Array(4);
-        players[0] = {id: '0', name: 'Thomas'};
-        players[1] = {id: '1', name: 'Catherine'};
-        players[2] = {id: '2', name: 'Magali'};
-        players[3] = {id: '3', name: 'Cécile'};
 
         let nextPossiblePositions = new Set();
         nextPossiblePositions.add(POSITION_START);
@@ -86,9 +52,10 @@ class Game extends React.Component {
                 squares: Array(boardSize).fill(null),
                 lettersPlay: null,
                 index: 0,
-                scores: Array(players.length),
+                score: 0,
                 deskLetters: INITIAL_DESK_LETTERS
             }],
+            gameId: this.gameId,
             types: types,
             currentLettersPlay: CURRENT_LETTERS_PLAY_INIT,
             nextPossiblePositions: nextPossiblePositions,
@@ -101,6 +68,18 @@ class Game extends React.Component {
         };
 
         this.boardPlay = new BoardPlay(POSITION_START, types, this.state.currentLettersPlay, this.state.history[0].squares);
+    }
+
+    componentDidMount() {
+        this.gameRepository.getGame(this.state.gameId, (game) => { this.initGame(game) });
+    }
+
+    initGame(game) {
+        let boardSize = game.boardSize;
+        if (game.stepNumber === 0) {
+            game.history[0].squares = Array(boardSize).fill(null);
+        }
+        this.setState(game);
     }
 
     validate() {
@@ -260,13 +239,13 @@ class Game extends React.Component {
         const players = this.state.players.map((player) => {
             let total = 0;
             let scores = [];
-            history.forEach((turn) => { if (turn.playerId === player.id) {
+            history.forEach((turn) => { if (turn.playerId === player.username) {
                 total = total + turn.score;
                 scores = scores.concat(turn.score);
             }});
             return (
                 <div className="player-score" key={player.id}>
-                    <div>{player.name} : {total}</div>
+                    <div>{player.firstName} : {total}</div>
                     <div className="score">
                     {
                         scores.map((score) => {
