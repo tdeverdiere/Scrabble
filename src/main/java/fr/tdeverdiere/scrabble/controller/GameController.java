@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -49,9 +50,14 @@ public class GameController {
         return game.get();
     }
 
-    @PostMapping("/gamesnew")
-    public String newGame() {
-        Game game = gameService.createNewGame();
+    @GetMapping("/newgame")
+    public String newGamePage() {
+        return "newgame";
+    }
+
+    @PostMapping("/creategame")
+    public String createGame(@RequestParam String name, @RequestParam String password) {
+        Game game = gameService.createNewGame(name, password);
         return "redirect:/index.html?game=" + game.getId();
     }
 

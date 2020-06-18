@@ -6,13 +6,17 @@ import fr.tdeverdiere.scrabble.domain.Type;
 import fr.tdeverdiere.scrabble.domain.User;
 import fr.tdeverdiere.scrabble.repository.GameRepository;
 import fr.tdeverdiere.scrabble.repository.UserRepository;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +26,8 @@ import java.util.TreeSet;
 
 @Service
 public class GameService {
+
+    private PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Autowired
     private GameRepository gameRepository;
@@ -53,9 +59,14 @@ public class GameService {
         return types;
     }
 
-    public Game createNewGame() {
+    public Game createNewGame(String name, String password) {
         Game game = new Game();
         game.setStepNumber(0);
+        game.setName(name);
+        LocalDateTime now = LocalDateTime.now();
+        game.setCreationDate(now);
+        game.setModificationDate(now);
+        game.setPassword(passwordEncoder.encode(password));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             throw new AccessDeniedException("Cannot create game.");

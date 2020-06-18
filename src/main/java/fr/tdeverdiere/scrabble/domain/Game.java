@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -20,6 +23,14 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    private String name;
+
+    private String password;
+
+    private LocalDateTime creationDate;
+
+    private LocalDateTime modificationDate;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<History> history;
@@ -102,5 +113,37 @@ public class Game {
 
     public void setBoardSize(int boardSize) {
         this.boardSize = boardSize;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getModificationDate() {
+        return modificationDate;
+    }
+
+    public void setModificationDate(LocalDateTime modificationDate) {
+        this.modificationDate = modificationDate;
     }
 }

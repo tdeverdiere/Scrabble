@@ -6,6 +6,11 @@ h2 {
     color: #4b7bab;
 }
 
+.game-date {
+    padding-left: 10px;
+    font-size: 12px;
+}
+
 footer {
     position: fixed;
     height: 50px;
