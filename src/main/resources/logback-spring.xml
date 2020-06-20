@@ -38,5 +38,12 @@
         <appender-ref ref="Console" />
     </root>
 
+    <logger name="org.hibernate.SQL" level="DEBUG">
+        <appender-ref ref="Console" />
+    </logger>
+
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE">
+        <appender-ref ref="Console" />
+    </logger>
 
 </configuration>

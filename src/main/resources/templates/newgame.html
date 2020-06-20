@@ -14,10 +14,20 @@
 <div th:insert="~{fragments/header :: header}"></div>
 
 <div class="container">
+    <div class="row row-header">
+        <div class="col-md-3 col-md-offset-3">
+            <h2>
+                New game
+            </h2>
+        </div>
+        <div class="col-md-3 col-md-offset-3 header-align-end">
+            <a class="btn btn-link" href="/" th:href="@{/p/games}">Back to games</a>
+        </div>
+
+    </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <form th:action="@{/p/game}" method="post">
-                <h2>Create New Game</h2>
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="Name">
@@ -33,7 +43,6 @@
         </div>
     </div>
 
-    <p><a href="/" th:href="@{/}">Back to home page</a></p>
 
 </div>
 

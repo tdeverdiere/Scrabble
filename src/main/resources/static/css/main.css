@@ -1,14 +1,18 @@
-h1 {
-    color: #78ab46;
-}
-
-h2 {
-    color: #4b7bab;
-}
 
 .game-date {
     padding-left: 10px;
     font-size: 12px;
+    float: right;
+    position: relative;
+    top: 2px;
+}
+
+.header-align-end {
+    text-align: end;
+}
+
+.row-header {
+   padding-bottom: 10px;
 }
 
 footer {

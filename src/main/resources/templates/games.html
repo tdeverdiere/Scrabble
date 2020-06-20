@@ -14,22 +14,29 @@
 <div th:insert="~{fragments/header :: header}"></div>
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <form th:action="@{/p/game}" method="get">
-                <input class="btn btn-primary" type="submit" value="New Game">
-            </form>
-            <h2 th:if="${games.size() > 0}">
-                List of games:
+    <div class="row row-header">
+        <div class="col-md-4 col-md-offset-3">
+            <h2>
+                Games
             </h2>
-            <div th:each="game : ${games}">
-                <a th:href="@{/p/game(gameId=${game.id})}" th:text="${game.name}">Nouvelle partie</a><span class="game-date" th:text="${game.creationDate}">07/06/2020 10h00</span>
-            </div>
-
+        </div>
+        <div  th:if="${games.size() > 0}" class="col-md-3 col-md-offset-3 header-align-end">
+            <form th:action="@{/p/game}" method="get">
+                <input class="btn btn-link" type="submit" value="Create a new game">
+            </form>
         </div>
     </div>
 
-    <p><a href="/" th:href="@{/}">Back to home page</a></p>
+    <div class="row">
+        <div class="col-md-7 col-md-offset-3">
+            <div th:if="${games.size() == 0}">
+                There are no existing games. <a th:href="@{/p/game}">Create a new one !</a>
+            </div>
+            <div class="list-group">
+                <a th:each="game : ${games}" th:href="@{/p/game(gameId=${game.id})}" class="list-group-item list-group-item-action"><span th:text="${game.name}">Nouvelle partie</span><span class="game-date" th:text="${#temporals.format(game.creationDate, 'dd/MM HH:mm')}">07/06/2020 10h00</span></a>
+            </div>
+        </div>
+    </div>
 
 </div>
 
