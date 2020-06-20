@@ -1,6 +1,9 @@
 package fr.tdeverdiere.scrabble.controller;
 
 import fr.tdeverdiere.scrabble.domain.Game;
+import fr.tdeverdiere.scrabble.exception.GameAccessDeniedException;
+import fr.tdeverdiere.scrabble.exception.GameNotExistsException;
+import fr.tdeverdiere.scrabble.exception.GamePasswordInvalidException;
 import fr.tdeverdiere.scrabble.repository.GameRepository;
 import fr.tdeverdiere.scrabble.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class GameController {
@@ -34,7 +36,13 @@ public class GameController {
         return game;
     }
 
-    @RequestMapping(value = "/games", method = {RequestMethod.GET, RequestMethod.POST})
+    @GetMapping("/games/{id}")
+    @ResponseBody
+    public Game getGame(@PathVariable("id") String id) throws GameAccessDeniedException, GameNotExistsException {
+        return gameService.getGame(id);
+    }
+
+    @RequestMapping(value = "/p/games", method = {RequestMethod.GET, RequestMethod.POST})
     public String games(Model model) {
         List<Game> games = gameRepository.findAll();
         model.addAttribute("games", games);
@@ -42,20 +50,40 @@ public class GameController {
         return "games";
     }
 
-    @GetMapping("/games/{id}")
-    @ResponseBody
-    public Game getGame(@PathVariable("id") String id) {
-        Optional<Game> game = gameRepository.findById(Integer.parseInt(id));
-
-        return game.get();
+    @PostMapping("/p/gamepassword")
+    public String validateGamePassword(@RequestParam("gameId") String gameId, @RequestParam("password") String password, Model model) {
+        try {
+            gameService.validatePassword(gameId, password);
+            return "redirect:/index.html?game=" + gameId;
+        } catch (GamePasswordInvalidException e) {
+            model.addAttribute("passwordinvalid", "Password is invalid");
+            model.addAttribute("gameId", gameId);
+            model.addAttribute("gameName", e.getName());
+            return "gamepassword";
+        } catch (GameNotExistsException e) {
+            return "redirect:/p/games";
+        }
     }
 
-    @GetMapping("/newgame")
-    public String newGamePage() {
-        return "newgame";
+    @GetMapping("/p/game")
+    public String chooseGame(@RequestParam(value = "gameId", required = false) String gameId, Model model) {
+        if (gameId == null) {
+            return "newgame";
+        }
+
+        try {
+            Game game = gameService.getGame(gameId);
+            return "redirect:/index.html?game=" + game.getId();
+        } catch (GameAccessDeniedException e) {
+            model.addAttribute("gameId", gameId);
+            model.addAttribute("gameName", e.getName());
+            return "gamepassword";
+        } catch (GameNotExistsException e) {
+            return "redirect:/p/games";
+        }
     }
 
-    @PostMapping("/creategame")
+    @PostMapping("/p/game")
     public String createGame(@RequestParam String name, @RequestParam String password) {
         Game game = gameService.createNewGame(name, password);
         return "redirect:/index.html?game=" + game.getId();

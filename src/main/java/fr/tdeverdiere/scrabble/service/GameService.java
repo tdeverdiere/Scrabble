@@ -4,9 +4,11 @@ import fr.tdeverdiere.scrabble.domain.Game;
 import fr.tdeverdiere.scrabble.domain.History;
 import fr.tdeverdiere.scrabble.domain.Type;
 import fr.tdeverdiere.scrabble.domain.User;
+import fr.tdeverdiere.scrabble.exception.GameAccessDeniedException;
+import fr.tdeverdiere.scrabble.exception.GameNotExistsException;
+import fr.tdeverdiere.scrabble.exception.GamePasswordInvalidException;
 import fr.tdeverdiere.scrabble.repository.GameRepository;
 import fr.tdeverdiere.scrabble.repository.UserRepository;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,6 +36,10 @@ public class GameService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
 
     public static int getDefaultBoardSize() {
         return 255;
@@ -95,6 +101,41 @@ public class GameService {
         game.setTypes(createDefaultTypes());
 
         return gameRepository.save(game);
+    }
+
+    public Game getGame(String id) throws GameAccessDeniedException, GameNotExistsException {
+        Optional<Game> optionalGame = gameRepository.findById(Integer.parseInt(id));
+
+        if (!optionalGame.isPresent()) {
+            throw new GameNotExistsException();
+        }
+
+        String name = optionalGame.get().getName();
+        User user = userService.getCurrentUser();
+        return optionalGame.filter(game -> game.getPlayers().contains(user))
+                .orElseThrow(() -> new GameAccessDeniedException(name));
+    }
+
+    public void validatePassword(String id, String password) throws GameNotExistsException, GamePasswordInvalidException {
+        Optional<Game> optionalGame = gameRepository.findById(Integer.parseInt(id));
+        if (!optionalGame.isPresent()) {
+            throw new GameNotExistsException();
+        }
+
+        Game game = optionalGame.get();
+        if (passwordEncoder.matches(password, game.getPassword())) {
+            User user = userService.getCurrentUser();
+            addUser(game, user);
+            return;
+        }
+        throw new GamePasswordInvalidException(game.getName());
+    }
+
+    public void addUser(Game game, User user) {
+        if (!game.getPlayers().contains(user)) {
+            game.getPlayers().add(user);
+            gameRepository.save(game);
+        }
     }
 
     private static void addTypes(Set<Type> types, Type.TypeName typeName, int... positions) {

@@ -13,6 +13,6 @@ public class LoginController {
 
     @RequestMapping("/")
     public String home() {
-        return "redirect:/games";
+        return "redirect:/p/games";
     }
 }

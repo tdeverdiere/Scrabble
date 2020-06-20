@@ -16,14 +16,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <form th:action="@{/newgame}" method="get">
+            <form th:action="@{/p/game}" method="get">
                 <input class="btn btn-primary" type="submit" value="New Game">
             </form>
             <h2 th:if="${games.size() > 0}">
                 List of games:
             </h2>
             <div th:each="game : ${games}">
-                <a th:href="@{/index.html(game=${game.id})}" th:text="${game.name}">Nouvelle partie</a><span class="game-date" th:text="${game.creationDate}">07/06/2020 10h00</span>
+                <a th:href="@{/p/game(gameId=${game.id})}" th:text="${game.name}">Nouvelle partie</a><span class="game-date" th:text="${game.creationDate}">07/06/2020 10h00</span>
             </div>
 
         </div>
