@@ -2,21 +2,20 @@ import React from 'react';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 const WEB_SOCKET_ENDPOINT = "/message";
-const TURN_ENDPOINT = "/turn";
-
-const webSocketChannels = [{
-    route: '/topic',
-    callback: () => { }
-}];
+const TURN_ENDPOINT = "/app/turn";
 
 const socket = SockJS(WEB_SOCKET_ENDPOINT);
 const stompClient = Stomp.over(socket);
 
 export class GameRepository {
 
-    constructor() {
+    constructor(turnTopicCallback) {
         this.maxReconnect = 5;
         this.timeStamp = Date.now();
+        this.channel = {
+            route: '/topic/turn',
+            callback: turnTopicCallback
+        }
     }
 
     setupWebSocket = () => {
@@ -31,11 +30,8 @@ export class GameRepository {
     }
 
     connect = () => {
-        const channels = webSocketChannels;
         const webSoc = stompClient;
-        channels.forEach((channel) => {
-            webSoc.subscribe(channel.route, channel.callback);
-        });
+        webSoc.subscribe(this.channel.route, this.channel.callback);
     }
 
     sendGameState = (gameState) => {

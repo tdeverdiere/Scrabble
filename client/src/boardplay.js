@@ -195,14 +195,14 @@ export class BoardPlay {
                     wordScore = wordScore + this._squares[position].point;
                 } else {
                     let letter = this.getCurrentLettersPlay(position);
-                    if (this._types[position] === 'mct') {
+                    if (this._types[position].content === 'mct') {
                         wordMulti = wordMulti * 3;
-                    } else if (this._types[position] === 'mcd' || this._types[position] === 'start') {
+                    } else if (this._types[position].content === 'mcd' || this._types[position].content === 'start') {
                         wordMulti = wordMulti * 2;
                     }
-                    if (this._types[position] === 'lct') {
+                    if (this._types[position].content === 'lct') {
                         wordScore = wordScore + letter.point * 3;
-                    } else if (this._types[position] === 'lcd') {
+                    } else if (this._types[position].content === 'lcd') {
                         wordScore = wordScore + letter.point * 2;
                     } else {
                         wordScore = wordScore + letter.point;

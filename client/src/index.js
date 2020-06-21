@@ -25,7 +25,15 @@ var urlParams;
 })();
 
 let POSITION_START = 112;
-let INITIAL_DESK_LETTERS =  [];
+let INITIAL_DESK_LETTERS =  [
+    {id: 1, letter: {content: 'W', point: 10}},
+    {id: 2, letter: {content: 'A', point: 1}},
+    {id: 3, letter: {content: 'G', point: 3}},
+    {id: 4, letter: {content: 'O', point: 1}},
+    {id: 5, letter: {content: 'N', point: 1}},
+    {id: 6, letter: {content: 'A', point: 1}},
+    {id: 7, letter: {content: 'U', point: 1}}
+];
 
 const CURRENT_LETTERS_PLAY_INIT = { firstPosition: null, lastPosition: null, direction: null, letters: Array(0)};
 
@@ -34,7 +42,7 @@ class Game extends React.Component {
         super(props);
         let types =  Array(boardSize).fill('square-standard');
 
-        this.gameRepository = new GameRepository();
+        this.gameRepository = new GameRepository((game) => this.initGame(game));
         this.gameId = urlParams["game"];
 
         // Have a game id and date and players.
@@ -71,6 +79,7 @@ class Game extends React.Component {
     }
 
     componentDidMount() {
+        this.gameRepository.setupWebSocket();
         this.gameRepository.getGame(this.state.gameId, (game) => { this.initGame(game) });
     }
 
@@ -80,6 +89,11 @@ class Game extends React.Component {
             game.history[0].squares = Array(boardSize).fill(null);
         }
         this.setState(game);
+
+        this.setState({
+            deskLetters: INITIAL_DESK_LETTERS
+        });
+        this.gameRepository.sendGameState(game);
     }
 
     validate() {
@@ -116,6 +130,7 @@ class Game extends React.Component {
         this.updateNextPossiblePositions(history.length);
 
         // TODO send result to server.
+        this.gameRepository.sendGameState(this.state);
     }
 
     cancel() {
