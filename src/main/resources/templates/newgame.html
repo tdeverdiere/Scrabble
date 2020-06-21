@@ -34,8 +34,18 @@
                     <small id="nameHelp" class="form-text text-muted">Name of the game to share.</small>
                 </div>
                 <div class="form-group">
+                    <label for="numberofplayers">Number of Players</label>
+                    <select class="form-control" id="numberofplayers" name="numberofplayers" aria-describedby="numberofplayersHelp">
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                    <small id="numberofplayersHelp" class="form-text text-muted">The number of players in the game.</small>
+                </div>
+                <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp"  placeholder="Password">
+                    <small id="passwordHelp" class="form-text text-muted">Share this password to others to access the game.</small>
                 </div>
 
                 <input class="btn btn-primary" type="submit" value="Create Game">

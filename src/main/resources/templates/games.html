@@ -33,7 +33,17 @@
                 There are no existing games. <a th:href="@{/p/game}">Create a new one !</a>
             </div>
             <div class="list-group">
-                <a th:each="game : ${games}" th:href="@{/p/game(gameId=${game.id})}" class="list-group-item list-group-item-action"><span th:text="${game.name}">Nouvelle partie</span><span class="game-date" th:text="${#temporals.format(game.creationDate, 'dd/MM HH:mm')}">07/06/2020 10h00</span></a>
+                <a th:each="game : ${games}" th:href="@{/p/game(gameId=${game.id})}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1" th:text="${game.name}">Nouvelle partie</h5>
+                        <span th:if="${game.numberOfPlayers - game.players.size()} == 0" class="badge badge-pill badge-secondary" th:text="Started + ' ' + ${game.numberOfPlayers} + ' ' + players">Started</span>
+                        <span class="badge badge-pill badge-primary" th:if="${game.numberOfPlayers - game.players.size()} > 0">
+                            <span>Open</span>
+                            <span th:text="${game.players.size()}">1</span>/<span th:text="${game.numberOfPlayers}">2</span>&nbsp;<span>players</span>
+                        </span>
+                    </div>
+                    <small th:text="'Created: ' + ${#temporals.format(game.creationDate, 'dd/MM HH:mm')}">07/06/2020 10h00</small>
+                </a>
             </div>
         </div>
     </div>

@@ -84,8 +84,8 @@ public class GameController {
     }
 
     @PostMapping("/p/game")
-    public String createGame(@RequestParam String name, @RequestParam String password) {
-        Game game = gameService.createNewGame(name, password);
+    public String createGame(@RequestParam String name, @RequestParam String password, @RequestParam Integer numberofplayers) {
+        Game game = gameService.createNewGame(name, password, numberofplayers);
         return "redirect:/index.html?game=" + game.getId();
     }
 

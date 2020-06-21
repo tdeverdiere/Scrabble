@@ -29,6 +29,8 @@ public class Game {
 
     private String password;
 
+    private int numberOfPlayers;
+
     private LocalDateTime creationDate;
 
     private LocalDateTime modificationDate;
@@ -58,6 +60,14 @@ public class Game {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
+    }
+
+    public void setNumberOfPlayers(int numberOfPlayers) {
+        this.numberOfPlayers = numberOfPlayers;
     }
 
     public List<History> getHistory() {

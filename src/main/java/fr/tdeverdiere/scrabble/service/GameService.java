@@ -65,10 +65,14 @@ public class GameService {
         return types;
     }
 
-    public Game createNewGame(String name, String password) {
+    public Game createNewGame(String name, String password, Integer numberofplayers) {
         Game game = new Game();
         game.setStepNumber(0);
         game.setName(name);
+        if (numberofplayers == null) {
+            numberofplayers = 2;
+        }
+        game.setNumberOfPlayers(numberofplayers);
         LocalDateTime now = LocalDateTime.now();
         game.setCreationDate(now);
         game.setModificationDate(now);
